@@ -145,6 +145,8 @@ function handleArguments(cont, options, arg2) {
 			checkInstantResume(false, arg2, cont);
 			triggerPause(cont);
 			return false;
+		case 'first':
+		case 'last':
 		case 'prev':
 		case 'next':
 			opts = $(cont).data('cycle.opts');
@@ -791,6 +793,42 @@ function getTimeout(curr, next, opts, fwd) {
 			return t;
 	}
 	return opts.timeout;
+}
+
+// first/last function
+$.fn.cycle.first = function(opts) { first(opts); };
+$.fn.cycle.last = function(opts) { last(opts); };
+
+function first(opts) {
+	var els = opts.elements;
+	var p = opts.$cont[0], timeout = p.cycleTimeout;
+	if (timeout) {
+		clearTimeout(timeout);
+		p.cycleTimeout = 0;
+	}
+
+	// TODO: handle random order.
+
+	opts.nextSlide = 0;
+
+	go(els, opts, 1);
+	return false;
+}
+
+function last(opts) {
+	var els = opts.elements;
+	var p = opts.$cont[0], timeout = p.cycleTimeout;
+	if (timeout) {
+		clearTimeout(timeout);
+		p.cycleTimeout = 0;
+	}
+
+	// TODO: handle random order.
+
+	opts.nextSlide = els.length - 1;
+
+	go(els, opts, 1);
+	return false;
 }
 
 // expose next/prev function, caller must pass in state
